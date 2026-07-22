@@ -13,7 +13,11 @@ set是无序的，转换为set的时候会打乱顺序
 时间复杂度更优
 
 ## 5. LeetCode 1中，哈希表保存了什么信息？
-不知道
+哈希表保存已经遍历过的数字及其下标，即：
+数字 -> 下标。
+
+遍历当前数字 number 时，计算 complement = target - number。
+如果 complement 已经在哈希表中，就返回 complement 对应的旧下标和当前下标。
 
 ## 6. 今天哪些Python语法需要查文档？
 sorted()函数，哈希表和列表的增删改查需要

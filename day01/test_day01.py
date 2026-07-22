@@ -18,4 +18,27 @@ try:
     assert False
 except ValueError:
     pass
+
+from python_basics import group_students
+
+assert analyze_numbers([2, 2, 2])["unique_count"] == 1
+assert analyze_numbers([-1, 2, 3])["sum"] == 4
+assert analyze_numbers([1, 3, 2])["sorted_numbers"] == [1, 2, 3]
+
+assert group_students(
+    [("Bob", 90), ("Alice", 90), ("Charlie", 59)]
+) == {
+    "A": ["Alice", "Bob"],
+    "B": [],
+    "C": [],
+    "D": [],
+    "F": ["Charlie"],
+}
+
+try:
+    create_batches([1, 2], -1)
+    assert False
+except ValueError:
+    pass
+
 print("All Day 1 tests passed.")

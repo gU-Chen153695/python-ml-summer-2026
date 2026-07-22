@@ -84,8 +84,8 @@ def group_students(records: list[tuple[str, int]]) -> dict[str, list[str]]:
 
 def create_batches(data: list, batch_size: int) -> list[list]:
     res = []
-    if batch_size == 0:
-        raise ValueError
+    if batch_size <= 0:
+        raise ValueError('batch size 必须是正整数。')
     for i in range(0, len(data), batch_size):
         res.append(data[i: i+batch_size])
     return res
