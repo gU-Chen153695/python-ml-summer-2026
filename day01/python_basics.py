@@ -24,8 +24,6 @@ def analyze_numbers(numbers: list[int]) -> dict:
 
 
 def count_words(text: str) -> dict[str, int]:
-    if text == '':
-        return {}
     txt = text.lower()
     txt = txt.split()
     for i, word in enumerate(txt):
@@ -37,7 +35,8 @@ def count_words(text: str) -> dict[str, int]:
         if txt[i] == '':
             txt.pop(i)
     txt.sort()
-
+    if not txt:
+        return {}
     dict1 = {txt[0]: txt.count(txt[0])}
     for i in range(1, len(txt)):
         if txt[i] != txt[i - 1]:

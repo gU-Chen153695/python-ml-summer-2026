@@ -4,6 +4,7 @@ assert analyze_numbers([])["count"] == 0
 assert analyze_numbers([1, 1, 2])["unique_count"] == 2
 
 assert count_words("") == {}
+assert count_words("!!!!@#") == {}
 assert count_words("Python python.")["python"] == 2
 
 assert unique_keep_order([]) == []
@@ -17,3 +18,4 @@ try:
     assert False
 except ValueError:
     pass
+print("All Day 1 tests passed.")
