@@ -1,29 +1,31 @@
 import string
+from math import ceil
 
 
 def analyze_numbers(numbers: list[int]) -> dict:
     array = numbers.copy()
-    dict = {}
-    dict['count'] = len(array)
+    dict1 = {'count': len(array)}
     sorted_array = sorted(array)
     if len(array) > 0:
-        dict['sum'] = sum(array)
-        dict['mean'] = sum(array) / len(array)
-        dict['max'] = max(array)
-        dict['min'] = min(array)
+        dict1['sum'] = sum(array)
+        dict1['mean'] = sum(array) / len(array)
+        dict1['max'] = max(array)
+        dict1['min'] = min(array)
         unique_count = 1
         for i in range(1, len(array)):
             if sorted_array[i] != sorted_array[i - 1]:
                 unique_count += 1
     else:
         unique_count = 0
-    dict['unique_count'] = unique_count
-    dict['sorted_numbers'] = sorted_array
-    return dict
-    #时间复杂度O(n)
+    dict1['unique_count'] = unique_count
+    dict1['sorted_numbers'] = sorted_array
+    return dict1
+    #时间复杂度O(n log n)
 
 
 def count_words(text: str) -> dict[str, int]:
+    if text == '':
+        return {}
     txt = text.lower()
     txt = txt.split()
     for i, word in enumerate(txt):
@@ -35,13 +37,12 @@ def count_words(text: str) -> dict[str, int]:
         if txt[i] == '':
             txt.pop(i)
     txt.sort()
-    dict1 = {}
-    dict1[txt[0]] = txt.count(txt[0])
+
+    dict1 = {txt[0]: txt.count(txt[0])}
     for i in range(1, len(txt)):
         if txt[i] != txt[i - 1]:
             dict1[txt[i]] = txt.count(txt[i])
     dict1 = sorted(dict1.items(), key = lambda x: (x[1], x[0]),reverse = True)
-    print(dict(dict1[:3]))
     dict1 = dict(dict1)
     return dict1
 
@@ -83,18 +84,15 @@ def group_students(records: list[tuple[str, int]]) -> dict[str, list[str]]:
 
 
 def create_batches(data: list, batch_size: int) -> list[list]:
-    res = [[] for _ in range(len(data) // batch_size +1)]
-    flag = 0
-    for x in range(len(data) // batch_size +1):
-        for i in range(batch_size):
-            res[x].append(data[flag])
-            flag += 1
-            if flag >= len(data):
-                break
+    res = []
+    if batch_size == 0:
+        raise ValueError
+    for i in range(0, len(data), batch_size):
+        res.append(data[i: i+batch_size])
     return res
     #相似之处在于都能够将列表变形，便于前向传递
 
 
 
 if __name__ == '__main__':
-    print(create_batches(data = [1, 2, 3, 4, 5, 6, 7], batch_size = 3))
+    print(count_words(''))
