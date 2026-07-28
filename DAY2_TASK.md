@@ -20,8 +20,7 @@ day02/
 ├── test_day02.py
 ├── leetcode_0242_valid_anagram.py
 ├── leetcode_0349_intersection.py   # 加做
-├── day02_notes.md
-└── internship_preparation.md
+└── day02_notes.md
 ```
 
 ## 二、主任务：学生成绩 CSV 分析器
@@ -290,9 +289,6 @@ git commit -m "solve: add LeetCode 242 solutions"
 git add day02/leetcode_0349_intersection.py
 git commit -m "solve: add optional LeetCode 349 solutions"
 
-git add day02/day02_notes.md day02/internship_preparation.md
-git commit -m "docs: complete Day 2 notes and internship preparation"
-
 git push
 ```
 
@@ -322,6 +318,5 @@ git push
 | 自动测试通过 | 10 |
 | LeetCode 242 | 10 |
 | 代码规范与类型标注 | 5 |
-| 学习笔记与实习准备 | 5 |
 
 加做 LeetCode 349 可获得额外 5 分，但总成绩最高为 100。
