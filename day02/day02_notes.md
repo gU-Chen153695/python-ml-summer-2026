@@ -9,8 +9,8 @@
 ## CSV
 
 1. `csv.DictReader` 返回的数据结构是什么？答：返回迭代器
-2. 为什么读取 CSV 时要使用 `newline=""`？答：因为windows会出错
-3. 为什么要显式指定 `encoding="utf-8"`？答：指定字体
+2. 为什么读取 CSV 时要使用 `newline=""`？答：让 csv 模块自己处理换行，避免文本模式的换行转换干扰 CSV。
+3. 为什么要显式指定 `encoding="utf-8"`？答：指定的是字符编码
 4. 如何检查 CSV 表头？答：fieldnames
 5. 多余字段和缺失字段在 `DictReader` 中可能如何表现？答：None和restkey
 
@@ -23,8 +23,8 @@
 ## 异常处理
 
 1. `ValueError` 在本项目中表示什么？答：数值错误
-2. `FileNotFoundError` 在什么情况下出现？答：找不到对应目录
-3. 为什么禁止使用裸 `except:`？答：没有扔出异常无法获取
+2. `FileNotFoundError` 在什么情况下出现？答：表示要访问的文件或目录路径不存在
+3. 为什么禁止使用裸 `except:`？答：捕获范围太广，容易隐藏程序错误
 4. `raise` 和 `return` 的区别是什么？答：raise直接终止程序，return返回值
 
 ## 字典与哈希

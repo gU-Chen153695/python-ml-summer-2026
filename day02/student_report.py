@@ -22,17 +22,22 @@ def parse_score(value: str, subject: str, row_number: int) -> int:
     不合法时抛出 ValueError，错误信息必须包含：
     行号、科目名称、原始值。
     """
-    # TODO
+    original_value = value
+
     try:
-        temp = float(value.strip())
-    except ValueError:
-        raise ValueError(f"Row {row_number}: invalid {subject} score '{value}'")
-    if temp < 0 or temp > 100:
-        raise ValueError(f"Row {row_number}: {subject} score out of range '{temp}'")
-    if temp % 1 != 0:
-        raise ValueError(f"ValueError: Row {row_number}: invalid {subject} score '{temp}'")
-    return int(temp)
-    raise NotImplementedError
+        score = int(value.strip())
+    except (AttributeError, ValueError):
+        raise ValueError(
+            f"Row {row_number}: invalid {subject} score '{original_value}'"
+        )
+    if not 0 <= score <= 100:
+        raise ValueError(
+            f"Row {row_number}: {subject} score out of range "
+            f"'{original_value}'"
+        )
+    if score % 1 != 0:
+        raise ValueError(f"ValueError: Row {row_number}: invalid {subject} score '{score}'")
+    return int(score)
 
 
 def validate_name(value: str, row_number: int) -> str:
@@ -40,11 +45,14 @@ def validate_name(value: str, row_number: int) -> str:
 
     姓名去除首尾空格后必须非空，长度为 1～30 个字符。
     """
-    # TODO
-    if len(value) > 30 or value.strip() == '':
-        raise ValueError(f"Row {row_number}: invalid name '{value}'")
-    return value.strip()
-    raise NotImplementedError
+    cleaned_name = value.strip()
+
+    if not 1 <= len(cleaned_name) <= 30:
+        raise ValueError(
+            f"Row {row_number}: invalid name '{cleaned_name}'"
+        )
+
+    return cleaned_name
 
 
 def load_students(file_path: Path) -> list[dict]:
@@ -57,40 +65,35 @@ def load_students(file_path: Path) -> list[dict]:
     4. 三科成绩均为 0～100 的整数；
     5. 至少有一条学生记录。
     """
-    # TODO
     rows = []
     with open(file_path, 'r', encoding='utf-8', newline='') as f:
         temp = csv.DictReader(f)
         if temp.fieldnames != ['name', 'math', 'python', 'ml']:
             raise ValueError('Invalid CSV headers')
         dict_name = dict()
-        for i, row in enumerate(temp):
+        for row_number, row in enumerate(temp, start=2):
             if len(row) != 4:
                 raise ValueError
-            row['name'] = validate_name(row['name'], i)
+            row['name'] = validate_name(row['name'], row_number)
             if row['name'] in dict_name:
-                raise ValueError(f"Row {i}: duplicate name '{row['name']}'")
-            dict_name[row['name']] = i
-            row['math'] = parse_score(row['math'], 'math', i)
-            row['python'] = parse_score(row['python'], 'python', i)
-            row['ml'] = parse_score(row['ml'], 'ml', i)
+                raise ValueError(f"Row {row_number}: duplicate name '{row['name']}'")
+            dict_name[row['name']] = row_number
+            row['math'] = parse_score(row['math'], 'math', row_number)
+            row['python'] = parse_score(row['python'], 'python', row_number)
+            row['ml'] = parse_score(row['ml'], 'ml', row_number)
             rows.append(row)
         if len(rows) == 0:
             raise ValueError('No student records found')
         return rows
-    raise NotImplementedError
 
 
 def calculate_student_average(student: dict) -> float:
     """返回学生三科原始平均分，不在此函数中格式化字符串。"""
-    # TODO
     return (student['math']+student['python']+student['ml']) / 3
-    raise NotImplementedError
 
 
 def assign_grade(average: float) -> str:
     """按平均分返回 A/B/C/D/F。"""
-    # TODO
     if average >= 90:
         return 'A'
     elif average >= 80:
@@ -101,21 +104,18 @@ def assign_grade(average: float) -> str:
         return 'D'
     else:
         return 'F'
-    raise NotImplementedError
 
 
 def calculate_subject_average(students: list[dict], subject: str) -> float:
     """计算指定科目的班级平均分。"""
-    # TODO
     if len(students) == 0:
         raise ValueError
-    if subject not in students[0].keys():
+    if subject not in SUBJECTS:
         raise ValueError(f"Invalid subject '{subject}'")
     sum_score = 0
     for row in students:
         sum_score += row[subject]
     return sum_score / len(students)
-    raise NotImplementedError
 
 
 def build_report(students: list[dict]) -> list[dict]:
@@ -128,13 +128,12 @@ def build_report(students: list[dict]) -> list[dict]:
     报告中的 average 保存为四舍五入到 2 位小数的 float。
     grade 必须根据未四舍五入的原始平均分计算。
     """
-    # TODO
-    for row in students:
+    students_copy = students.copy()
+    students_copy = sorted(students_copy, key=lambda x: (-x['average'], x['name']))
+    for row in students_copy:
         row['average'] = float(f"{calculate_student_average(row):.2f}")
         row['grade'] = assign_grade(calculate_student_average(row))
-    students = sorted(students, key=lambda x: (-x['average'], x['name']))
-    return students
-    raise NotImplementedError
+    return students_copy
 
 
 def write_report(report: list[dict], output_path: Path) -> None:
@@ -146,22 +145,20 @@ def write_report(report: list[dict], output_path: Path) -> None:
     average 写入时必须始终显示两位小数。
     输出目录不存在时必须自动创建。
     """
-    # TODO
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    for row in report:
-        row['average'] = f'{row['average']:.2f}'
+    report_copy = report.copy()
+    for row in report_copy:
+        row['average'] = f"{row['average']:.2f}"
     with open(output_path, 'w', encoding='utf-8', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=['name', 'math', 'python', 'ml', 'average', 'grade'])
         writer.writeheader()
-        writer.writerows(report)
+        writer.writerows(report_copy)
 
 
 def main() -> None:
     base_dir = Path(__file__).resolve().parent
     input_path = base_dir / "data" / "students.csv"
     output_path = base_dir / "output" / "student_report.csv"
-    print(input_path)
-    print(output_path)
 
     try:
         students = load_students(input_path)
