@@ -117,23 +117,31 @@ def calculate_subject_average(students: list[dict], subject: str) -> float:
 
 
 def build_report(students: list[dict]) -> list[dict]:
-    """生成报告并排序。
+    sorted_students = sorted(
+        students,
+        key=lambda student: (
+            -calculate_student_average(student),
+            student["name"],
+        ),
+    )
 
-    排序规则：
-    1. 原始平均分降序；
-    2. 原始平均分相同时，姓名升序。
+    report = []
 
-    报告中的 average 保存为四舍五入到 2 位小数的 float。
-    grade 必须根据未四舍五入的原始平均分计算。
-    """
-    students_copy = students.copy()
-    for row in students_copy:
-        row['average'] = float(f"{calculate_student_average(row)}")
-        row['grade'] = assign_grade(calculate_student_average(row))
-    students_copy = sorted(students_copy, key=lambda x: (-x['average'], x['name']))
-    for row in students_copy:
-        row['average'] = float(f"{calculate_student_average(row):.2f}")
-    return students_copy
+    for student in sorted_students:
+        raw_average = calculate_student_average(student)
+
+        report.append(
+            {
+                "name": student["name"],
+                "math": student["math"],
+                "python": student["python"],
+                "ml": student["ml"],
+                "average": round(raw_average, 2),
+                "grade": assign_grade(raw_average),
+            }
+        )
+
+    return report
 
 
 def write_report(report: list[dict], output_path: Path) -> None:
