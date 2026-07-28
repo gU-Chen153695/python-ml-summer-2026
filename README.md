@@ -12,7 +12,7 @@ student at Imperial College London.
 - Build a solid machine learning foundation
 - Learn end-to-end PyTorch training workflows
 - Complete portfolio-ready AI projects
-- Prepare for AI-related internships
+- Build strong foundations for AI and machine learning
 
 ## Learning Rules
 

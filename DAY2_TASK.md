@@ -267,13 +267,11 @@ python day02/leetcode_0349_intersection.py
 LeetCode 349 local tests passed.
 ```
 
-## 六、笔记与实习准备
+## 六、笔记
 
-必须填写：
 
 ```text
 day02/day02_notes.md
-day02/internship_preparation.md
 ```
 
 笔记不得保留空白问题，至少记录三个实际错误。
@@ -309,7 +307,6 @@ git push
 5. LeetCode 242 Accepted 截图或说明；
 6. LeetCode 349 是否完成；
 7. `day02_notes.md`；
-8. 实习岗位和预计技术栈；
 9. `git log --oneline -8`；
 10. 当天有效学习时长。
 

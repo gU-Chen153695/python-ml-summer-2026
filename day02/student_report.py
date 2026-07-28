@@ -35,8 +35,6 @@ def parse_score(value: str, subject: str, row_number: int) -> int:
             f"Row {row_number}: {subject} score out of range "
             f"'{original_value}'"
         )
-    if score % 1 != 0:
-        raise ValueError(f"ValueError: Row {row_number}: invalid {subject} score '{score}'")
     return int(score)
 
 
@@ -129,10 +127,12 @@ def build_report(students: list[dict]) -> list[dict]:
     grade 必须根据未四舍五入的原始平均分计算。
     """
     students_copy = students.copy()
+    for row in students_copy:
+        row['average'] = float(f"{calculate_student_average(row)}")
+        row['grade'] = assign_grade(calculate_student_average(row))
     students_copy = sorted(students_copy, key=lambda x: (-x['average'], x['name']))
     for row in students_copy:
         row['average'] = float(f"{calculate_student_average(row):.2f}")
-        row['grade'] = assign_grade(calculate_student_average(row))
     return students_copy
 
 
@@ -146,13 +146,17 @@ def write_report(report: list[dict], output_path: Path) -> None:
     输出目录不存在时必须自动创建。
     """
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    report_copy = report.copy()
-    for row in report_copy:
-        row['average'] = f"{row['average']:.2f}"
-    with open(output_path, 'w', encoding='utf-8', newline='') as f:
-        writer = csv.DictWriter(f, fieldnames=['name', 'math', 'python', 'ml', 'average', 'grade'])
+    with output_path.open("w", encoding="utf-8", newline="") as file:
+        fieldnames = ["name", "math", "python", "ml", "average", "grade"]
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerows(report_copy)
+
+        for row in report:
+            output_row = {
+                **row,
+                "average": f"{row['average']:.2f}",
+            }
+            writer.writerow(output_row)
 
 
 def main() -> None:
