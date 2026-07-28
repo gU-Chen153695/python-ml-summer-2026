@@ -30,7 +30,11 @@ sorted()函数，哈希表和列表的增删改查需要
 都是关闭资料写的
 
 ## 9. 今天遇到的三个错误及解决办法
-LeetCode 217审题错误，没有返回下标而是直接返回了数字
+1. LeetCode 217审题错误，没有返回下标而是直接返回了数字
+
+2. count_words处理空字符串和纯标点字符串时，清理后列表为空，继续访问txt[0]会报错；加入if not txt: return {}。
+
+3. create_batches最初只判断batch_size == 0，没有处理负数；改为batch_size <= 0并抛出ValueError。
 
 ## 10. 自我评分
 - Python syntax: 6/10
