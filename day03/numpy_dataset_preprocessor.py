@@ -47,7 +47,7 @@ def one_hot_encode(
     num_classes: int | None = None,
 ) -> np.ndarray:
     """将非负整数标签转换为 float64 one-hot 矩阵。"""
-    if  labels.size == 0 or not np.isdtype(labels.dtype, np.integer):
+    if  labels.size == 0 or not np.issubdtype(labels.dtype, np.integer):
         raise ValueError
     if labels.ndim != 1:
         raise ValueError
