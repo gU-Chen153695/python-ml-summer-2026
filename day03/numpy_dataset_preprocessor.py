@@ -8,8 +8,6 @@
 from __future__ import annotations
 
 import numpy as np
-from numpy.f2py.symbolic import integer_types
-from numpy.ma.core import indices, floor
 
 
 def as_feature_matrix(data) -> np.ndarray:
@@ -51,12 +49,12 @@ def one_hot_encode(
     """将非负整数标签转换为 float64 one-hot 矩阵。"""
     if  labels.size == 0 or not np.isdtype(labels.dtype, np.integer):
         raise ValueError
-    if not (0 <= labels).all() or not (labels < num_classes).all():
-        raise ValueError
     if labels.ndim != 1:
         raise ValueError
     if num_classes is None:
         num_classes = labels.max() + 1
+    if not (0 <= labels).all() or not (labels < num_classes).all():
+        raise ValueError
     res = np.zeros((len(labels), num_classes), dtype='float64')
     res[np.arange(len(labels)), labels] = 1.0
     return res
