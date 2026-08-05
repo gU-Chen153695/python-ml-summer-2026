@@ -8,14 +8,15 @@
 from __future__ import annotations
 
 import numpy as np
-from numpy.ma.core import indices
+from numpy.f2py.symbolic import integer_types
+from numpy.ma.core import indices, floor
 
 
 def as_feature_matrix(data) -> np.ndarray:
     """转换并验证二维 float64 特征矩阵，返回独立副本。"""
     try:
         res = np.array(data, dtype=np.float64).copy()
-        if res.shape[1] == 2 and np.isfinite(res).all():
+        if res.ndim == 2 and res.shape[0] > 0 and res.shape[1] >0 and np.isfinite(res).all():
             return res
         else:
             raise ValueError
@@ -48,14 +49,14 @@ def one_hot_encode(
     num_classes: int | None = None,
 ) -> np.ndarray:
     """将非负整数标签转换为 float64 one-hot 矩阵。"""
-    if num_classes is None:
-        num_classes = labels.max() + 1
-    if  labels.size == 0 or not np.isdtype(labels.dtype, np.int64):
+    if  labels.size == 0 or not np.isdtype(labels.dtype, np.integer):
         raise ValueError
     if not (0 <= labels).all() or not (labels < num_classes).all():
         raise ValueError
     if labels.ndim != 1:
         raise ValueError
+    if num_classes is None:
+        num_classes = labels.max() + 1
     res = np.zeros((len(labels), num_classes), dtype='float64')
     res[np.arange(len(labels)), labels] = 1.0
     return res
@@ -74,10 +75,11 @@ def train_test_split(
     indices_ = rng.permutation(len(labels))
     res_X = features[indices_]
     res_Y = labels[indices_]
-    if len(res_X) * (1 - test_ratio) % 1 != 0:
+    test_size = int(np.ceil(len(res_X) * test_ratio))
+    if test_size < 1 or test_size >= len(res_X):
         raise ValueError
-    res_X = np.array_split(res_X, [int(len(res_X) * (1 - test_ratio))])
-    res_Y = np.array_split(res_Y, [int(len(res_Y) * (1 - test_ratio))])
+    res_X = np.array_split(res_X, [int(np.floor(len(res_X) * (1 - test_ratio)))])
+    res_Y = np.array_split(res_Y, [int(np.floor(len(res_Y) * (1 - test_ratio)))])
     X_train, X_test = res_X[0], res_X[1]
     Y_train, Y_test = res_Y[0], res_Y[1]
     return X_train, X_test, Y_train, Y_test
@@ -92,6 +94,12 @@ def create_mini_batches(
 ) -> list[tuple[np.ndarray, np.ndarray]]:
     """将数据切分成 mini-batch。"""
     if features.shape[0] != labels.shape[0]:
+        raise ValueError
+    if isinstance(batch_size, bool):
+        raise ValueError
+    if not isinstance(batch_size, (int, np.integer)):
+        raise ValueError
+    if batch_size <= 0 :
         raise ValueError
     res_feature = features.copy()
     res_label = labels.copy()
