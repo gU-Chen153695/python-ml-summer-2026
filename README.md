@@ -25,4 +25,5 @@ student at Imperial College London.
 ## Progress
 
 - [x] Day 1: Python environment, core data structures and hashing
-- [ ] Day 2: Functions, files, CSV and exception handling
+- [x] Day 2: Functions, files, CSV and exception handling
+- [x] Day 3: NumPy arrays, vectorization and AI data preprocessing
